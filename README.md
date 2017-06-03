@@ -1,3 +1,3 @@
-#Sweeper
+*Sweeper
 
 This is our sweeper.
