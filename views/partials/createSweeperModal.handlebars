@@ -1,0 +1,29 @@
+{{! This is a handlebars partial for the new game modal}}
+
+<div id="modal-backdrop" class="hidden"></div>
+<div id="create-game-modal" class="hidden">
+  <div class="modal-dialog">
+
+    <div class="modal-header">
+      <h3>Create a game</h3>
+      <button type="button" class="modal-close-button">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="row-input-element">
+        <label for="row-text-input">Rows</label>
+        <textarea id="row-text-input"></textarea>
+      </div>
+      <div class="col-input-element">
+        <label for="col-input">Columns</label>
+        <input type="text" id="twit-attribution-input">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="modal-cancel-button">Cancel</button>
+      <button type="button" class="modal-accept-button">Create Game</button>
+    </div>
+
+  </div>
+</div>
