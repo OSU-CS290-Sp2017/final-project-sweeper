@@ -1,0 +1,10 @@
+[
+  {
+    "x": 0,
+    "y": 0,
+    "flagged": false,
+    "cleared": false,
+    "mine": false,
+    "value": 0
+  }
+]
