@@ -11,4 +11,4 @@ app.post('/',function(req, res){
 	res.send('hey guys')
 })
 
-
+app.listen(3000)
