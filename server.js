@@ -1,10 +1,15 @@
 var express = require('express')
+var expressHandles = require('express-handlebars')
 var app = express()
+var boardData = require('./boardData.json') //requires board file, game state
 
-//routing
+
+app.engine('handlebars', expressHandles({defaultLayout:'main'})); 
+//routing ('', {params})
 
 app.get('/', function(req, res){
-	res.send('put stuff here')
+
+	res.render('boardData', {row: boardData.})
 })
 
 app.post('/',function(req, res){
