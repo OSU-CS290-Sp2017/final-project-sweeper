@@ -1,0 +1,13 @@
+{{! this is a handlebars template with our list of rows}}
+
+{{> header}}
+
+<main class="row-container">
+    {{#each row}}
+        {{> row}}
+    {{/each}}
+</main>
+
+{{#if modal}}
+    {{> createTwitModal}}
+{{/if}}
