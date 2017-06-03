@@ -1,10 +1,7 @@
-[
-  {
-    "x": 0,
-    "y": 0,
-    "flagged": false,
-    "cleared": false,
-    "mine": false,
-    "value": 0
-  }
-]
+{
+  "rows": 10,
+  "cols": 10,
+  "totalMines": 8,
+  "remainingMines": 8,
+  "board": []
+}
