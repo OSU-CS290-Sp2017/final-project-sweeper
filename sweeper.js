@@ -2,13 +2,19 @@ var fs = require('fs');
 
 var gameState = {
     "dead": false,
+    "win": false,
     "rows": 10,
     "cols": 10,
     "totalMines": 0,
     "remainingMines": 0,
     "board": []
 }
-playGame();
+var fileKey = "testing2";       //automatically adds .json at end of file
+var minePercent = 0.03;         //chance that each spot is a mine, out of 1
+var newOrRead = 0;              //0 for new, 1 for read
+var rows = 5;                   //obvious
+var cols = 5;
+playGame(fileKey, minePercent, newOrRead, rows, cols);
 
 //creates each cell, requires an x coordinate, y coordinate, and whether or not
 //the space is a mine
@@ -76,22 +82,22 @@ function readMap(fileName){
 }
 
 //initializes the map with rows, cols, and sets each space to its correct value
-function initializeMap(){
+function initializeMap(minePercent, rows, cols){
 
-    gameState.cols = 10;
-    gameState.rows = 10;
+    gameState.cols = cols;
+    gameState.rows = rows;
 
     //sets whether or not each cell has a mine
     for (var i = 0; i < gameState.cols; i++) {
         gameState.board[i] = [];
         for (var j = 0; j < gameState.rows; j++) {
-            var isMine = 0.1;                   //each mine has this*100
+            var isMine = minePercent;                   //each mine has this*100
             if(isMine < Math.random()){         //percent chance of being a mine
                 gameState.board[i][j] = Cell(i, j, false);
-                gameState.totalMines++;
             }
             else{
                 gameState.board[i][j] = Cell(i, j, true);
+                gameState.totalMines++;
             }
         }
     }
@@ -115,22 +121,22 @@ function countNearby(i,j,GS){
     if (i-1 >= 0)
         if (GS.board[i-1][j].mine) counter++;
 
-    if (i-1 >= 0 && j+1 < GS.cols )
+    if (i-1 >= 0 && j+1 < GS.rows )
         if (GS.board[i-1][j+1].mine) counter++;
 
     if (j-1 >= 0 )
         if (GS.board[i][j-1].mine) counter++;
 
-    if (j+1 < GS.cols )
+    if (j+1 < GS.rows )
         if (GS.board[i][j+1].mine) counter++;
 
-    if (i+1 < GS.rows && j-1 >= 0 )
+    if (i+1 < GS.cols && j-1 >= 0 )
         if (GS.board[i+1][j-1].mine) counter++;
 
-    if (i+1 < GS.rows)
+    if (i+1 < GS.cols)
         if (GS.board[i+1][j].mine) counter++;
 
-    if (i+1 < GS.rows && j+1 < GS.cols )
+    if (i+1 < GS.cols && j+1 < GS.rows )
         if (GS.board[i+1][j+1].mine) counter++;
 
 
@@ -141,34 +147,56 @@ function takeTurn(GS){
     markMap(2,4,1,GS);
     printMap(GS);
     console.log("marked 1");
-    markMap(7,8,2,GS);
-    printMap(GS);
-    console.log("marked 2");
-    markMap(9,9,1,GS);
-    printMap(GS);
-    console.log("marked 3");
+    // markMap(7,8,1,GS);
+    // printMap(GS);
+    // console.log("marked 2");
+    // markMap(9,9,1,GS);
+    // printMap(GS);
+    // console.log("marked 3");
+
+    checkWin(GS);
+}
+
+function checkWin(GS){
+
+    var minesCounter = GS.totalMines;
+    for (var i = 0; i < GS.cols; i++) {
+        for (var j = 0; j < GS.rows; j++) {
+            if(GS.board[i][j].cleared == false){
+                minesCounter--;
+            } else if(GS.board[i][j].flagged == true){
+                minesCounter--;
+            }
+        }
+    }
+    console.log(minesCounter);
+    if(minesCounter == 0){
+        GS.win = true;
+        console.log("set win to true");
+    }
+
 }
 
 function markMap(x,y,type,GS){
     if(type == 1){       //left click
-        if(GS.board[x][y].mine == true){
+        if(GS.board[y][x].mine == true){
             GS.dead = true;
             displayLocation(x,y,GS);
         }
-        else if(GS.board[x][y].value == 0){
+        else if(GS.board[y][x].value == 0){
             displayLocation(x,y,GS);
             clearNearby(x,y,GS);
         } else{
             displayLocation(x,y,GS);
         }
     } else if(type == 2){   //right click
-        if(GS.board[x][y].flagged == false){
-            GS.board[x][y].flagged = true;
+        if(GS.board[y][x].flagged == false){
+            GS.board[y][x].flagged = true;
         } else{
-            GS.board[x][y].flagged = false;
+            GS.board[y][x].flagged = false;
         }
     } else if(type == 3){    //recursive clear nearby
-        if(GS.board[x][y].value == 0 && GS.board[x][y].cleared == false){
+        if(GS.board[y][x].value == 0 && GS.board[y][x].cleared == false){
             displayLocation(x,y,GS);
             clearNearby(x,y,GS);
         } else{
@@ -209,16 +237,18 @@ function clearNearby(i,j,GS){
 //displays the value of the current location, needed so we can actually
 //change the page in the future.
 function displayLocation(x,y,GS){
-    GS.board[x][y].cleared = true;
+    GS.board[y][x].cleared = true;
 }
 
-function playGame(){
+function playGame(fileKey, minePercent, newOrRead, rows, cols){
     var GS;
-    var fileKey = "testing";
-    GS = initializeMap();
-    //GS = readMap("testing");
+    if(newOrRead == 0){
+        GS = initializeMap(minePercent,rows, cols);
+    } else {
+        GS = readMap(fileKey);
+    }
     printDebugMap(GS);
-    //while(gameState.dead == false){
+    //while(gameState.dead == false && gameState.win == false){
         takeTurn(GS);
     //}
     saveMap(fileKey,GS);
