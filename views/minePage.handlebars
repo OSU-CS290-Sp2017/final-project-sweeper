@@ -2,12 +2,18 @@
 
 {{> header}}
 
-<main class="row-container">
+<main class="board">
     {{#each row}}
-        {{> row}}
+        <div class="row">
+                {{#each this}}
+                    <p>fuck you bailey</p>
+                    {{> cell}}
+                {{/each}}
+        </div>
+{{!        {{> row }}
     {{/each}}
 </main>
 
 {{#if modal}}
-    {{> createTwitModal}}
+    {{> createSweeperModal}}
 {{/if}}
