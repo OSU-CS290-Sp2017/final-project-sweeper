@@ -9,11 +9,8 @@ app.engine('handlebars', expressHandles({defaultLayout:'main'}));
 app.set('view engine', 'handlebars');
 //routing ('', {params})
 
-<<<<<<< HEAD
-=======
 var indexJsContent = fs.readFileSync('./public/sweeper.js');
 var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js');
->>>>>>> 265cd5689092642acb7dff77b3c5766d70cf0842
 
 app.get('/', function(req, res){
     res.status(200);
