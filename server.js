@@ -19,11 +19,19 @@ app.get('/', function(req, res){
 	res.render('minePage', {modal: true});
 });
 
+app.get('/play/:filekey', function(req, res){
+    res.status(200);
+    var key = req.params.filekey;
+    boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
+    res.render('minePage', {row: boardData.board, modal: false});
+});
+
 app.get('/:filekey/map', function(req, res){
     res.status(200);
     var key = req.params.filekey;
-    boardData = JSON.parse(fs.readFileSync('./public/savefiles/testing.json', 'utf-8'));
-	res.render('minePage', {row: boardData.board, modal: false});
+    boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
+    res.send(boardData);
+    //res.render('minePage', {row: boardData.board, modal: false});
 });
 
 app.get('/style.css', function(req, res){
