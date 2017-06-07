@@ -2,11 +2,11 @@ var express = require('express');
 var fs = require('fs');
 var expressHandles = require('express-handlebars');
 var app = express();
-var boardData = require('./map.json'); //requires board file, game state
+var boardData = require('./public/savefiles/testing.json'); //requires board file, game state
 
 var cssContent = fs.readFileSync('./public/style.css', 'utf-8');
 
-app.engine('handlebars', expressHandles({defaultLayout:'main'})); 
+app.engine('handlebars', expressHandles({defaultLayout:'main'}));
 app.set('view engine', 'handlebars');
 //routing ('', {params})
 
