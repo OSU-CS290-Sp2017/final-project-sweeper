@@ -1,7 +1,7 @@
 {{! this is a handlebars template with our list of rows}}
 
 {{> header}}
-
+{{!
 <main id="board">
     {{#each row}}
         <div class="row">
@@ -18,7 +18,12 @@
         </div>
     {{/each}}
 </main>
-
+!}}
+<main id="board">
+    {{#each this}}
+        {{> row}}
+    {{/each}}
+</main>
 {{#if modal}}
     {{> createSweeperModal}}
 {{/if}}
