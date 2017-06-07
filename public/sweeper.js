@@ -1,4 +1,4 @@
-var fs = require('fs');
+// var fs = require('fs');
 
 var gameState = {
     "theme": "default",
@@ -11,11 +11,13 @@ var gameState = {
     "board": []
 }
 var cellContainer = document.getElementById('board');
-cellContainer.addEventListener('click', delegatedCellListener(event));
+cellContainer.addEventListener('click', function(){
+    delegatedCellListener(event);
+});
 
 var fileKey = "testing";       //automatically adds .json at end of file
 var minePercent = 0.03;         //chance that each spot is a mine, out of 1
-var newOrRead = 1;              //0 for new, 1 for read
+var newOrRead = 0;              //0 for new, 1 for read
 var rows = 5;                   //obvious
 var cols = 5;
 playGame(fileKey, minePercent, newOrRead, rows, cols);
@@ -72,17 +74,26 @@ function printMap(GS){
 }
 
 function saveMap(fileName,GS){
-    var out = JSON.stringify(GS,null,'\t');
-    fs.writeFileSync("./public/" + fileName + ".json", out);
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
+    xmlHttp.send( GS );
+
+    // var out = JSON.stringify(GS,null,'\t');
+    // fs.writeFileSync("./public/" + fileName + ".json", out);
 
 }
 
 function readMap(fileName){
 
-    var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
-    var gameState = JSON.parse(input);
-    //console.log(input);
-    return gameState;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "./" + fileKey + "/map", false ); // false for synchronous request
+    xmlHttp.send( fileKey );
+    return xmlHttp.responseText;
+
+    // var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
+    // var gameState = JSON.parse(input);
+    // console.log(input);
+    // return gameState;
 }
 
 //initializes the map with rows, cols, and sets each space to its correct value
