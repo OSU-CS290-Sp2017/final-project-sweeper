@@ -1,6 +1,7 @@
 var fs = require('fs');
 
 var gameState = {
+    "theme": "default",
     "dead": false,
     "win": false,
     "rows": 10,
@@ -9,9 +10,9 @@ var gameState = {
     "remainingMines": 0,
     "board": []
 }
-var fileKey = "testing2";       //automatically adds .json at end of file
+var fileKey = "testing";       //automatically adds .json at end of file
 var minePercent = 0.03;         //chance that each spot is a mine, out of 1
-var newOrRead = 0;              //0 for new, 1 for read
+var newOrRead = 1;              //0 for new, 1 for read
 var rows = 5;                   //obvious
 var cols = 5;
 playGame(fileKey, minePercent, newOrRead, rows, cols);
@@ -68,7 +69,7 @@ function printMap(GS){
 }
 
 function saveMap(fileName,GS){
-    var out = JSON.stringify(GS);
+    var out = JSON.stringify(GS,null,'\t');
     fs.writeFileSync(fileName + ".json", out);
 
 }
