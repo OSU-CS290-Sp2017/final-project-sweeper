@@ -3,6 +3,7 @@ var fs = require('fs');
 var expressHandles = require('express-handlebars');
 var app = express();
 var boardData = require('./public/savefiles/testing.json'); //requires board file, game state
+var port = process.env.PORT || 3000;
 
 var cssContent = fs.readFileSync('./public/style.css', 'utf-8');
 
@@ -24,4 +25,4 @@ app.post('/',function(req, res){
 	res.send('hey guys');
 });
 
-app.listen(3000);
+app.listen(port);
