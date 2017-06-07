@@ -5,12 +5,17 @@
 <main class="board">
     {{#each row}}
         <div class="row">
-                {{#each this}}
-                    <p>fuck you bailey</p>
-                    {{> cell}}
-                {{/each}}
+            {{#each this}}
+                <article class="cell">
+                    {{#if this.flagged}} 
+                        <i class="fa fa-flag cell-text"> </i>
+                    {{/if}}
+                    {{#unless this.flagged}} 
+                        <p class="cell-text">{{this.value}}</p>
+                    {{/unless}}
+                </article>
+            {{/each}}
         </div>
-{{!        {{> row }}
     {{/each}}
 </main>
 
