@@ -24,14 +24,21 @@ app.get('/style.css', function(req, res){
     res.end(cssContent);
 });
 
+/*
 app.get('/index.js', function(req, res){
     res.status(200);
     res.end(indexJsContent);
 });
+*/
 
 app.get('/mineTemplate.js', function(req, res){
     res.status(200);
     res.end(mineTemplateContent);
+});
+
+app.get('*', function(req, res){
+    res.status(404);
+    res.render('404page');
 });
 
 app.post('/',function(req, res){
