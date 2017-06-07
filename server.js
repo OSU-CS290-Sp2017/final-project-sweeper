@@ -12,6 +12,7 @@ app.set('view engine', 'handlebars');
 var indexJsContent = fs.readFileSync('./public/sweeper.js');
 var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js');
 var flagContent = fs.readFileSync('./themes/default/flag.png');
+var colorContent = fs.readFileSync('./themes/default/color.css', 'utf-8');
 
 app.get('/', function(req, res){
     res.status(200);
@@ -46,6 +47,11 @@ app.get('/mineTemplate.js', function(req, res){
 app.get('/flag.png', function(req, res){
     res.status(200);
     res.end(flagContent);
+});
+
+app.get('/color.css', function(req, res){
+    res.status(200);
+    res.end(colorContent);
 });
 
 app.get('*', function(req, res){
