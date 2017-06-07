@@ -11,19 +11,18 @@ app.set('view engine', 'handlebars');
 
 var indexJsContent = fs.readFileSync('./public/sweeper.js');
 var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js');
+var flagContent = fs.readFileSync('./themes/default/flag.png');
 
 app.get('/', function(req, res){
     res.status(200);
-	//res.render('minePage', {row: boardData.board, modal: true});
-    res.send("stuff will happen here");
+	res.render('minePage', {modal: true});
 });
 
 app.get('/:filekey/map', function(req, res){
     res.status(200);
     var key = req.params.filekey;
-    boardData = fs.readFileSync('./public/savefiles/testing.json', 'utf-8');
-    console.log(JSON.stringify(boardData.board));
-	res.render('minePage', {row: boardData.board, modal: true});
+    boardData = JSON.parse(fs.readFileSync('./public/savefiles/testing.json', 'utf-8'));
+	res.render('minePage', {row: boardData.board, modal: false});
 });
 
 app.get('/style.css', function(req, res){
@@ -44,10 +43,14 @@ app.get('/mineTemplate.js', function(req, res){
     res.end(mineTemplateContent);
 });
 
+app.get('/flag.png', function(req, res){
+    res.status(200);
+    res.end(flagContent);
+});
+
 app.get('*', function(req, res){
-  console.log("404");
     res.status(404);
-    res.render('404page');
+    res.render('404Page');
 });
 
 app.post('/:filekey/map',function(req, res){

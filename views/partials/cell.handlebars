@@ -1,7 +1,17 @@
 {{! A handlebars partial for a single cell. }}
 
-<article class="cell">
-        <p class="cell-text">
-            {{text}}
-        </p>
-</article>
+{{#if this.cleared}}
+    <article class="cell cleared">
+{{/if}}
+{{#unless this.cleared}}
+    <article class="cell">
+{{/unless}}
+        {{#if this.value}}
+            <p class="cell-text">
+                    {{this.value}}
+            </p>
+        {{/if}}
+        {{#if this.flagged}}
+            <img src="/flag.png">
+        {{/if}}
+    </article>
