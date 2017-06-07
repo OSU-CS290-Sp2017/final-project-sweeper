@@ -45,6 +45,7 @@ app.get('/mineTemplate.js', function(req, res){
 });
 
 app.get('*', function(req, res){
+  console.log("404");
     res.status(404);
     res.render('404page');
 });
