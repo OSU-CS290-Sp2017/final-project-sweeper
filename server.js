@@ -9,7 +9,7 @@ app.engine('handlebars', expressHandles({defaultLayout:'main'}));
 app.set('view engine', 'handlebars');
 //routing ('', {params})
 
-var indexJsContent = fs.readFileSync('./public
+var indexJsContent = fs.readFileSync('./public');
 
 app.get('/', function(req, res){
     res.status(200);
