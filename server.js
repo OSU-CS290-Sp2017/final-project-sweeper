@@ -9,7 +9,8 @@ app.engine('handlebars', expressHandles({defaultLayout:'main'}));
 app.set('view engine', 'handlebars');
 //routing ('', {params})
 
-var indexJsContent = fs.readFileSync('./public
+var indexJsContent = fs.readFileSync('./public/sweeper.js');
+var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js');
 
 app.get('/', function(req, res){
     res.status(200);
@@ -26,6 +27,11 @@ app.get('/style.css', function(req, res){
 app.get('/index.js', function(req, res){
     res.status(200);
     res.end(indexJsContent);
+});
+
+app.get('/mineTemplate.js', function(req, res){
+    res.status(200);
+    res.end(mineTemplateContent);
 });
 
 app.post('/',function(req, res){
