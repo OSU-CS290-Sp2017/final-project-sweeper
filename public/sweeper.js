@@ -10,6 +10,9 @@ var gameState = {
     "remainingMines": 0,
     "board": []
 }
+var cellContainer = document.getElementById('board');
+cellContainer.addEventListener('click', delegatedCellListener(event));
+
 var fileKey = "testing";       //automatically adds .json at end of file
 var minePercent = 0.03;         //chance that each spot is a mine, out of 1
 var newOrRead = 1;              //0 for new, 1 for read
@@ -70,13 +73,13 @@ function printMap(GS){
 
 function saveMap(fileName,GS){
     var out = JSON.stringify(GS,null,'\t');
-    fs.writeFileSync(fileName + ".json", out);
+    fs.writeFileSync("./public/" + fileName + ".json", out);
 
 }
 
 function readMap(fileName){
 
-    var input = fs.readFileSync(fileName + ".json","utf-8");
+    var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
     var gameState = JSON.parse(input);
     //console.log(input);
     return gameState;
@@ -235,6 +238,18 @@ function clearNearby(i,j,GS){
 
 }
 
+function delegatedCellListener(event){
+    var currElem = event.target;
+
+    while (currElem.getAttribute('id') !== 'board') {
+        if (currElem.classList.contains('cell')) {
+            
+
+            break;
+        }
+        currElem = currElem.parentNode;
+    }
+}
 //displays the value of the current location, needed so we can actually
 //change the page in the future.
 function displayLocation(x,y,GS){
