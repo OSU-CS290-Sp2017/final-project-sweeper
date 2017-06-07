@@ -1,0 +1,26 @@
+.site-title{
+  background-color: #888888;
+  color: #fff;
+}
+.navbar {
+  background-color: #fff;
+}
+
+.cell{
+    color: white;
+    background-color: yellow;
+}
+
+.cell.cleared{
+    background-color: grey;
+}
+
+a {
+  color: #343434;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: yellow;
+}
