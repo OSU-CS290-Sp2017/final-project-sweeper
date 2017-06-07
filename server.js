@@ -2,23 +2,30 @@ var express = require('express');
 var fs = require('fs');
 var expressHandles = require('express-handlebars');
 var app = express();
-var boardData = require('./public/savefiles/testing.json'); //requires board file, game state
 var port = process.env.PORT || 3000;
-
-var cssContent = fs.readFileSync('./public/style.css', 'utf-8');
+var boardData;
 
 app.engine('handlebars', expressHandles({defaultLayout:'main'}));
 app.set('view engine', 'handlebars');
 //routing ('', {params})
 
+var indexJsContent = fs.readFileSync('./public
+
 app.get('/', function(req, res){
     res.status(200);
+    boardData = fs.readFileSync('./public/savefiles/testing.json'); //requires board file, game state
 	res.render('minePage', {row: boardData.board, modal: true});
 });
 
 app.get('/style.css', function(req, res){
     res.status(200);
+    var cssContent = fs.readFileSync('./public/style.css', 'utf-8');
     res.end(cssContent);
+});
+
+app.get('/index.js', function(req, res){
+    res.status(200);
+    res.end(indexJsContent);
 });
 
 app.post('/',function(req, res){
