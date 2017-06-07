@@ -2,23 +2,14 @@
 
 {{> header}}
 
-<main id="board">
-    {{#each row}}
-        <div class="row">
-            {{#each this}}
-                <article class="cell">
-                    {{#if this.flagged}} 
-                        <i class="fa fa-flag cell-text"> </i>
-                    {{/if}}
-                    {{#unless this.flagged}} 
-                        <p class="cell-text">{{this.value}}</p>
-                    {{/unless}}
-                </article>
-            {{/each}}
-        </div>
-    {{/each}}
-</main>
 
+{{#unless modal}}
+    <main id="board">
+        {{#each row}}
+            {{> row}}
+        {{/each}}
+    </main>
+{{/unless}}
 {{#if modal}}
     {{> createSweeperModal}}
 {{/if}}

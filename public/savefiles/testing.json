@@ -363,7 +363,7 @@
 			{
 				"x": 4,
 				"y": 3,
-				"flagged": false,
+				"flagged": true,
 				"cleared": false,
 				"mine": true,
 				"value": 0
