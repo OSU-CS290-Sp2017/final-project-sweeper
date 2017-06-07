@@ -1,12 +1,17 @@
 var express = require('express');
 var fs = require('fs');
 var expressHandles = require('express-handlebars');
+var bodyParser = require('body-parser');
+// var sweeper = require('./public/sweeper');
 var app = express();
 var port = process.env.PORT || 3000;
 var boardData;// = fs.readFileSync('./public/savefiles/testing.json'); //requires board file, game state
 
 app.engine('handlebars', expressHandles({defaultLayout:'main'}));
 app.set('view engine', 'handlebars');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 //routing ('', {params})
 
 var indexJsContent = fs.readFileSync('./public/sweeper.js');
@@ -19,19 +24,35 @@ app.get('/', function(req, res){
 	res.render('minePage', {modal: true});
 });
 
-app.get('/play/:filekey', function(req, res){
+app.get('/play/:filekey', function(req, res, next){
     res.status(200);
     var key = req.params.filekey;
-    boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
-    res.render('minePage', {row: boardData.board, modal: false});
+    if(fs.existsSync('./public/savefiles/' + key + '.json')){
+        boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
+        if(boardData){
+            res.render('minePage', {row: boardData.board, modal: false});
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
-app.get('/:filekey/map', function(req, res){
+app.get('/play/:filekey/map', function(req, res){
     res.status(200);
+
     var key = req.params.filekey;
-    boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
-    res.send(boardData);
-    //res.render('minePage', {row: boardData.board, modal: false});
+    if(fs.existsSync('./public/savefiles/' + key + '.json')){
+        boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
+        if(boardData){
+            res.send(boardData);
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 app.get('/style.css', function(req, res){
@@ -67,9 +88,11 @@ app.get('*', function(req, res){
     res.render('404Page');
 });
 
-app.post('/:filekey/map',function(req, res){
+app.post('/play/:filekey/map',function(req, res){
     var key = req.params.filekey;
-    fs.writeFileSync('./public/savfiles/' + key + '.json', boardData);
+    fs.writeFileSync('./public/savefiles/' + key + '.json', JSON.stringify(req.body,null,'\t'));
+    res.status(200);
+    res.end();
 });
 
 app.listen(port);
