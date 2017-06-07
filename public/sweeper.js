@@ -240,10 +240,12 @@ function clearNearby(i,j,GS){
 
 function delegatedCellListener(event){
     var currElem = event.target;
+    var temp;
 
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
-            
+            temp = currElem.id;
+            console.log(temp);
 
             break;
         }
