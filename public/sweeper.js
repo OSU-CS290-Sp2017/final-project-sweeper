@@ -76,7 +76,9 @@ function printMap(GS){
 function saveMap(fileName,GS){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send( JSON.stringify(GS) );
+    //xmlHttp.send( GS );
 
     // var out = JSON.stringify(GS,null,'\t');
     // fs.writeFileSync("./public/" + fileName + ".json", out);
@@ -256,7 +258,7 @@ function delegatedCellListener(event){
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
             temp = currElem.id;
-            console.log(temp);
+            console.log(currElem);
 
             break;
         }
@@ -270,13 +272,14 @@ function displayLocation(x,y,GS){
 }
 
 function playGame(fileKey, minePercent, newOrRead, rows, cols){
+    console.log("starting playGame");
     var GS;
     if(newOrRead == 0){
         GS = initializeMap(minePercent,rows, cols);
     } else {
         GS = readMap(fileKey);
     }
-    printDebugMap(GS);
+    //printDebugMap(GS);
     //while(gameState.dead == false && gameState.win == false){
         takeTurn(GS);
     //}
