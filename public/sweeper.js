@@ -263,7 +263,7 @@ function delegatedCellListener(event){
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
             temp = currElem.id;
-            console.log(temp);
+            //console.log(temp);
             coordinate = parseIdForCoordinate(temp);
             markMap(coordinate.row,coordinate.col,1)
             break;
@@ -277,8 +277,8 @@ function parseIdForCoordinate(str){
     var row = str.slice(0,str.indexOf("_row"));
     col = col.slice(5, col.length);
     row = row.slice(4, row.length);
-    console.log(col);
-    console.log(row);
+    // console.log(col);
+    // console.log(row);
 
     return {
         "col":col,

@@ -14,9 +14,10 @@ app.use(bodyParser.json());
 
 //routing ('', {params})
 
-var indexJsContent = fs.readFileSync('./public/sweeper.js');
-var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js');
-var flagContent = fs.readFileSync('./themes/default/flag.png');
+var indexJsContent = fs.readFileSync('./public/sweeper.js', 'utf-8');
+var mapGeneratorContent = fs.readFileSync('./public/mapgenerator.js', 'utf-8');
+var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js', 'utf-8');
+var flagContent = fs.readFileSync('./themes/default/flag.png', 'utf-8');
 var colorContent = fs.readFileSync('./themes/default/color.css', 'utf-8');
 
 app.get('/', function(req, res){
@@ -39,7 +40,7 @@ app.get('/play/:filekey', function(req, res, next){
     }
 });
 
-app.get('/play/:filekey/map', function(req, res){
+app.get('/play/:filekey/map', function(req, res, next){
     res.status(200);
 
     var key = req.params.filekey;
@@ -54,6 +55,15 @@ app.get('/play/:filekey/map', function(req, res){
         next();
     }
 });
+
+app.get('/generate/:filekey', function(req, res, next){
+    res.status(200);
+    var key = req.params.filekey;
+
+    res.status(200);
+    res.end(mapGeneratorContent);
+});
+
 
 app.get('/style.css', function(req, res){
     res.status(200);
