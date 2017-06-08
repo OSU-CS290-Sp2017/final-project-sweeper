@@ -1,10 +1,10 @@
 {{! A handlebars partial for a single cell. }}
 
 {{#if this.cleared}}
-    <article class="cell cleared">
+    <article class="cell cleared" id="col_{{x}}_row_{{y}}">
 {{/if}}
 {{#unless this.cleared}}
-    <article class="cell">
+    <article class="cell" id="col_{{x}}_row_{{y}}">
 {{/unless}}
         {{#if this.value}}
             <p class="cell-text">
