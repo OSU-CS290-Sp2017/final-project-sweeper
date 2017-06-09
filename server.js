@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 var indexJsContent = fs.readFileSync('./public/sweeper.js', 'utf-8');
 var mapGeneratorContent = fs.readFileSync('./public/mapgenerator.js', 'utf-8');
 var mineTemplateContent = fs.readFileSync('./public/sweeperTemplate.js', 'utf-8');
-var flagContent = fs.readFileSync('./themes/default/flag.png', 'utf-8');
+var flagContent = fs.readFileSync('./themes/default/flag.png');
 var colorContent = fs.readFileSync('./themes/default/color.css', 'utf-8');
 
 app.get('/', function(req, res){
