@@ -12,10 +12,10 @@ var gameState = {
 }
 
 
-var fileKey = "gen1";       //automatically adds .json at end of file
-var minePercent = 0.03;         //chance that each spot is a mine, out of 1
-var rows = 13;                   //obvious
-var cols = 13;
+var fileKey = process.env.NAME || "newMap";       //automatically adds .json at end of file
+var minePercent = process.env.MINEPERCENT || 0.1;         //chance that each spot is a mine, out of 1
+var rows = process.env.ROWS || 10;                   //obvious
+var cols = process.env.COLS || 10;
 
 //window.addEventListener('load', function(){
     playGame(fileKey, minePercent, rows, cols);
@@ -56,8 +56,8 @@ function saveMap(fileName){
 //initializes the map with rows, cols, and sets each space to its correct value
 function initializeMap(minePercent, rows, cols){
 
-    gameState.cols = cols;
-    gameState.rows = rows;
+    gameState.cols = rows;
+    gameState.rows = cols;
 
     //sets whether or not each cell has a mine
     for (var i = 0; i < gameState.cols; i++) {
