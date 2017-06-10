@@ -15,6 +15,9 @@
     background-color: grey;
 }
 
+.cell.flagged{
+    background-color: red;
+}
 a {
   color: #343434;
   text-decoration: none;

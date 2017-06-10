@@ -103,8 +103,8 @@ function saveMap(fileName){
 function readMap(fileName){
 
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "./" + fileKey + "/map", false ); // false for synchronous request
-    xmlHttp.send( fileKey );
+    xmlHttp.open( "GET", "./" + fileName + "/map", false ); // false for synchronous request
+    xmlHttp.send( fileName );
     return JSON.parse(xmlHttp.responseText);
     console.log("HERE");
     // var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
@@ -193,9 +193,9 @@ function checkWin(){
     var minesCounter = GS.totalMines;
     for (var i = 0; i < GS.cols; i++) {
         for (var j = 0; j < GS.rows; j++) {
-            if(GS.board[i][j].cleared == false){
+            if(GS.board[i][j].flagged == true){
                 minesCounter--;
-            } else if(GS.board[i][j].flagged == true){
+            } else if(GS.board[i][j].cleared == false){
                 minesCounter--;
             }
         }
@@ -209,10 +209,11 @@ function checkWin(){
 }
 
 function markMap(x,y,type){
-    if(type == 1){       //left click
+    console.log(typeof x,typeof y)
+    if(type == 1 ){       //left click
         if(GS.board[y][x].mine == true){
             GS.dead = true;
-            displayLocation(x,y);
+            displayLocation(x,y,1);
         }else{
             open_cell(x, y);
         }
@@ -227,8 +228,10 @@ function markMap(x,y,type){
     } else if(type == 2){   //right click
         if(GS.board[y][x].flagged == false){
             GS.board[y][x].flagged = true;
+            displayLocation(x,y,2);
         } else{
             GS.board[y][x].flagged = false;
+            displayLocation(x,y,3);
         }
     } /*else if(type == 3){    //recursive clear nearby
         if(GS.board[y][x].value == 0 && GS.board[y][x].cleared == false){
@@ -242,15 +245,21 @@ function markMap(x,y,type){
 
 //displays the value of the current location, needed so we can actually
 //change the page in the future.
-function displayLocation(x,y){
+function displayLocation(x,y,type){
     GS.board[x][y].cleared = true;
     var currCell = document.getElementById('col_' + x + '_row_' + y);
 
-    currCell.classList.add('cleared');
+    if(type == 1){
+        currCell.classList.add('cleared');
+    } else if(type == 2){
+        currCell.classList.add('flagged');
+    } else if(type == 3){
+        currCell.classList.remove('flagged');
+    }
 }
 
 function open_cell(x,y){
-    displayLocation(x,y);
+    displayLocation(x,y,1);
     if(GS.board[x][y].value != 0){
         return;
     }else{
@@ -261,7 +270,7 @@ function open_cell(x,y){
                     open_cell(x + i, y + j);
                 }
             }
-        }        
+        }
     }
 }
 
@@ -297,16 +306,24 @@ function delegatedCellListener(event){
     var currElem = event.target;
     var temp;
     var coordinate;
+    console.log(event);
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
             temp = currElem.id;
             //console.log(temp);
             coordinate = parseIdForCoordinate(temp);
-            markMap(parseInt(coordinate.row),parseInt(coordinate.col),1)
+
+            if(event.altKey){
+                markMap(parseInt(coordinate.row),parseInt(coordinate.col),2);
+
+            } else {
+                markMap(parseInt(coordinate.row),parseInt(coordinate.col),1);
+            }
             break;
         }
         currElem = currElem.parentNode;
     }
+    checkWin();
 }
 
 function parseIdForCoordinate(str){
@@ -314,18 +331,22 @@ function parseIdForCoordinate(str){
     var row = str.slice(0,str.indexOf("_row"));
     col = col.slice(5, col.length);
     row = row.slice(4, row.length);
-    // console.log(col);
-    // console.log(row);
+     console.log(col,parseInt(col));
+     console.log(row,parseInt(row));
 
     return {
-        "col":col,
-        "row":row
+        "col":parseInt(col),
+        "row":parseInt(row)
     }
 
 }
 
 function playGame(fileKey, minePercent, newOrRead, rows, cols){
     console.log("starting playGame");
+    var url = window.location.href;
+    fileKey = url.slice(url.indexOf("/play/"),url.length);
+    fileKey = fileKey.slice(6,fileKey.length);
+
     if(newOrRead == 0){
         GS = initializeMap(minePercent,rows, cols);
     } else {
