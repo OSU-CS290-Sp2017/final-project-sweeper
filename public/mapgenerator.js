@@ -1,4 +1,4 @@
-// var fs = require('fs');
+var fs = require('fs');
 
 var gameState = {
     "theme": "default",
@@ -17,9 +17,9 @@ var minePercent = 0.03;         //chance that each spot is a mine, out of 1
 var rows = 13;                   //obvious
 var cols = 13;
 
-window.addEventListener('load', function(){
+//window.addEventListener('load', function(){
     playGame(fileKey, minePercent, rows, cols);
-});
+// });
 //creates each cell, requires an x coordinate, y coordinate, and whether or not
 //the space is a mine
 function Cell(x, y, isMine) {
@@ -41,14 +41,14 @@ function getRandomBetween(min,max){
 
 
 function saveMap(fileName){
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send( JSON.stringify(gameState) );
+    // var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
+    // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    // xmlHttp.send( JSON.stringify(gameState) );
     //xmlHttp.send( GS );
 
-    // var out = JSON.stringify(GS,null,'\t');
-    // fs.writeFileSync("./public/" + fileName + ".json", out);
+    var out = JSON.stringify(gameState,null,'\t');
+    fs.writeFileSync("./public/savefiles/" + fileName + ".json", out);
 
 }
 
