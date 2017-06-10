@@ -1,4 +1,3 @@
-// var fs = require('fs');
 
 var gameState = {
     "theme": "default",
@@ -26,6 +25,18 @@ var cols = 5;
 window.addEventListener('load', function(){
     playGame(fileKey, minePercent, newOrRead, rows, cols);
 });
+
+var modalCloseButton = document.querySelector('#create-game-modal .modal-close-button');
+console.log('HELLO');
+console.log(modalCloseButton);
+modalCloseButton.addEventListener('click', closeCreateGameModal);
+
+var modalCancalButton = document.querySelector('#create-game-modal .modal-cancel-button');
+modalCancalButton.addEventListener('click', closeCreateGameModal);
+
+//var modalAcceptButton = document.querySelector('#creategamet-modal .modal-accept-button');
+//modalAcceptButton.addEventListener('click', insertNewTwit);
+
 //creates each cell, requires an x coordinate, y coordinate, and whether or not
 //the space is a mine
 function Cell(x, y, isMine) {
@@ -325,5 +336,24 @@ function playGame(fileKey, minePercent, newOrRead, rows, cols){
         takeTurn();
     //}
     saveMap(fileKey);
+
+}
+
+function closeCreateGameModal() {
+ 
+    console.log('here');
+
+    var modalBackdrop = document.getElementById('modal-backdrop').classList.add('hidden');
+    var createTwitModal = document.getElementById('create-twit-modal').classList.add('hidden');
+
+    // Hide the modal and its backdrop.
+    //modalBackdrop.classList.add('hidden');
+    //createTwitModal.classList.add('hidden');
+
+    var inputElems = document.getElementsByClassName('game-input-element');
+    for (var i = 0; i < inputElems.length; i++) {
+        var input = inputElems[i].querySelector('input, textarea');
+        input.value = '';
+    }
 
 }
