@@ -110,8 +110,11 @@ function countNearby(i,j){
     if (i+1 < gameState.cols && j+1 < gameState.rows )
         if (gameState.board[i+1][j+1].mine) counter++;
 
-
-    gameState.board[i][j].value = counter;
+    if(gameState.board[i][j].mine){
+        gameState.board[i][j].value = 0;
+    } else{
+        gameState.board[i][j].value = counter;
+    }
 }
 
 
