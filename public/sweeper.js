@@ -1,4 +1,16 @@
-// var fs = require('fs');
+//sweeper.js client side
+console.log("test");
+var searchb = document.getElementById("navbar-search-button");
+var searchtext = document.getElementById('navbar-search-input');
+searchb.addEventListener('click',twitsearch);
+
+function twitsearch(){
+  console.log("in twitsearch func");
+  var searchq = document.getElementById('navbar-search-input').value;
+  var twitcontainer = document.querySelector('.twit-container');
+  console.log("twit search value = ", searchq);
+}
+
 
 var gameState = {
     "theme": "default",
