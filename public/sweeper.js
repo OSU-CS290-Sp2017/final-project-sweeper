@@ -17,7 +17,7 @@ cellContainer.addEventListener('click', function(){
 });
 
 
-var fileKey = "testing";       //automatically adds .json at end of file
+var fileKey = "map";       //automatically adds .json at end of file
 var minePercent = 0.03;         //chance that each spot is a mine, out of 1
 var newOrRead = 1;              //0 for new, 1 for read
 var rows = 5;                   //obvious
@@ -95,13 +95,12 @@ function readMap(fileName){
     xmlHttp.open( "GET", "./" + fileKey + "/map", false ); // false for synchronous request
     xmlHttp.send( fileKey );
     return JSON.parse(xmlHttp.responseText);
-
+    console.log("HERE");
     // var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
     // var gameState = JSON.parse(input);
     // console.log(input);
     // return gameState;
 }
-
 //initializes the map with rows, cols, and sets each space to its correct value
 function initializeMap(minePercent, rows, cols){
 
@@ -165,9 +164,9 @@ function countNearby(i,j){
 }
 
 function takeTurn(){
-    markMap(2,4,1);
-    printMap();
-    console.log("marked 1");
+    //markMap(2,4,1);
+    //printMap();
+    //console.log("marked 1");
     // markMap(7,8,1,GS);
     // printMap(GS);
     // console.log("marked 2");
@@ -203,30 +202,58 @@ function markMap(x,y,type){
         if(GS.board[y][x].mine == true){
             GS.dead = true;
             displayLocation(x,y);
+        }else{
+            open_cell(x, y);
         }
-        else if(GS.board[y][x].value == 0){
+
+/*        else if(GS.board[y][x].value == 0){
             displayLocation(x,y);
             clearNearby(x,y);
         } else{
             displayLocation(x,y);
         }
+        */
     } else if(type == 2){   //right click
         if(GS.board[y][x].flagged == false){
             GS.board[y][x].flagged = true;
         } else{
             GS.board[y][x].flagged = false;
         }
-    } else if(type == 3){    //recursive clear nearby
+    } /*else if(type == 3){    //recursive clear nearby
         if(GS.board[y][x].value == 0 && GS.board[y][x].cleared == false){
             displayLocation(x,y);
             clearNearby(x,y);
         } else{
             displayLocation(x,y);
         }
-    }
-
-
+    }*/
 }
+
+//displays the value of the current location, needed so we can actually
+//change the page in the future.
+function displayLocation(x,y){
+    GS.board[x][y].cleared = true;
+    var currCell = document.getElementById('col_' + x + '_row_' + y);
+
+    currCell.classList.add('cleared');
+}
+
+function open_cell(x,y){
+    displayLocation(x,y);
+    if(GS.board[x][y].value != 0){
+        return;
+    }else{
+        for(var i = -1; i < 2; i++){
+            for(var j = -1; j < 2; j++){
+                if(!((y + j < 0) || (y + j >= GS.rows) || (x + i < 0) || (x + i >= GS.cols)) && GS.board[x + i][y + j].cleared == false){
+                    //console.log('(' + (y+j) + ', ' + (x + i) + ')' + ', ' + GS.board[x+i][y+j].cleared + ', '+ GS.board[x+i][y+j].value);
+                    open_cell(x + i, y + j);
+                }
+            }
+        }        
+    }
+}
+
 function clearNearby(i,j){
 
     if (i-1 >= 0 && j-1 >= 0 )
@@ -259,13 +286,12 @@ function delegatedCellListener(event){
     var currElem = event.target;
     var temp;
     var coordinate;
-
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
             temp = currElem.id;
             //console.log(temp);
             coordinate = parseIdForCoordinate(temp);
-            markMap(coordinate.row,coordinate.col,1)
+            markMap(parseInt(coordinate.row),parseInt(coordinate.col),1)
             break;
         }
         currElem = currElem.parentNode;
@@ -285,14 +311,6 @@ function parseIdForCoordinate(str){
         "row":row
     }
 
-}
-//displays the value of the current location, needed so we can actually
-//change the page in the future.
-function displayLocation(x,y){
-    GS.board[y][x].cleared = true;
-    var currCell = document.getElementById('col_' + x + '_row_' + y);
-
-    currCell.classList.add('cleared');
 }
 
 function playGame(fileKey, minePercent, newOrRead, rows, cols){
