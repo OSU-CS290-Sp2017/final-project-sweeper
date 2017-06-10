@@ -198,9 +198,9 @@ function checkWin(){
 }
 
 function markMap(x,y,type){
-    console.log(typeof x,typeof y)
+    //console.log(GS.board[x][y].mine);
     if(type == 1 ){       //left click
-        if(GS.board[y][x].mine == true){
+        if(GS.board[x][y].mine == true){
             GS.dead = true;
             displayLocation(x,y,1);
         }else{
@@ -215,11 +215,11 @@ function markMap(x,y,type){
         }
         */
     } else if(type == 2){   //right click
-        if(GS.board[y][x].flagged == false){
-            GS.board[y][x].flagged = true;
+        if(GS.board[x][y].flagged == false){
+            GS.board[x][y].flagged = true;
             displayLocation(x,y,2);
         } else{
-            GS.board[y][x].flagged = false;
+            GS.board[x][y].flagged = false;
             displayLocation(x,y,3);
         }
     } /*else if(type == 3){    //recursive clear nearby
@@ -295,7 +295,7 @@ function delegatedCellListener(event){
     var currElem = event.target;
     var temp;
     var coordinate;
-    console.log(event);
+    //console.log(event);
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
             temp = currElem.id;
@@ -320,8 +320,8 @@ function parseIdForCoordinate(str){
     var row = str.slice(0,str.indexOf("_row"));
     col = col.slice(5, col.length);
     row = row.slice(4, row.length);
-     console.log(col,parseInt(col));
-     console.log(row,parseInt(row));
+      console.log(col,parseInt(col));
+      console.log(row,parseInt(row));
 
     return {
         "col":parseInt(col),
@@ -331,7 +331,7 @@ function parseIdForCoordinate(str){
 }
 
 function playGame(fileKey, minePercent, newOrRead, rows, cols){
-    console.log("starting playGame");
+    //console.log("starting playGame");
     var url = window.location.href;
     fileKey = url.slice(url.indexOf("/play/"),url.length);
     fileKey = fileKey.slice(6,fileKey.length);
