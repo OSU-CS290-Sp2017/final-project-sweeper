@@ -10,32 +10,36 @@ var gameState = {
     "board": []
 }
 var GS;
+
 var cellContainer = document.getElementById('board');
-cellContainer.addEventListener('click', function(){
-    delegatedCellListener(event);
-});
+cellContainer.addEventListener('click', function(){delegatedCellListener(event)});
 
-
-var fileKey = "map";       //automatically adds .json at end of file
+var fileKey;       //automatically adds .json at end of file
 var minePercent = 0.03;         //chance that each spot is a mine, out of 1
 var newOrRead = 1;              //0 for new, 1 for read
 var rows = 5;                   //obvious
 var cols = 5;
 
 window.addEventListener('load', function(){
-    playGame(fileKey, minePercent, newOrRead, rows, cols);
+    //playGame(fileKey, minePercent, newOrRead, rows, cols);
+    var url = window.location.href;
+    var fileKey = url.slice(url.indexOf("/play/"),url.length);
+    fileKey = fileKey.slice(6,fileKey.length);
+    GS = readMap(fileKey);
 });
 
 var modalCloseButton = document.querySelector('#create-game-modal .modal-close-button');
-console.log('HELLO');
-console.log(modalCloseButton);
+if(modalCloseButton)
 modalCloseButton.addEventListener('click', closeCreateGameModal);
 
-var modalCancalButton = document.querySelector('#create-game-modal .modal-cancel-button');
-modalCancalButton.addEventListener('click', closeCreateGameModal);
+var modalCancelButton = document.querySelector('#create-game-modal .modal-cancel-button');
+if(modalCloseButton)
+modalCancelButton.addEventListener('click', closeCreateGameModal);
 
-//var modalAcceptButton = document.querySelector('#creategamet-modal .modal-accept-button');
-//modalAcceptButton.addEventListener('click', insertNewTwit);
+
+var modalAcceptButton = document.querySelector('#create-game-modal .modal-accept-button');
+if(modalAcceptButton)
+modalAcceptButton.addEventListener('click', newGame);
 
 //creates each cell, requires an x coordinate, y coordinate, and whether or not
 //the space is a mine
@@ -48,6 +52,15 @@ function Cell(x, y, isMine) {
         "mine": isMine,
         "value": 0
     };
+}
+
+function makeListeners(){
+    cellContainer = document.getElementById('board');
+    if(cellContainer){
+        cellContainer.addEventListener('click', function(){
+            delegatedCellListener(event);
+        });
+    }
 }
 
 function getRandomBetween(min,max){
@@ -88,16 +101,11 @@ function printMap(){
     }
 }
 
-function saveMap(fileName){
+function saveMap(fileKey){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
+    xmlHttp.open( "POST", "./" + fileKey, false ); // false for synchronous request
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send( JSON.stringify(GS) );
-    //xmlHttp.send( GS );
-
-    // var out = JSON.stringify(GS,null,'\t');
-    // fs.writeFileSync("./public/" + fileName + ".json", out);
-
 }
 
 function readMap(fileName){
@@ -106,7 +114,6 @@ function readMap(fileName){
     xmlHttp.open( "GET", "./" + fileName + "/map", false ); // false for synchronous request
     xmlHttp.send( fileName );
     return JSON.parse(xmlHttp.responseText);
-    console.log("HERE");
     // var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
     // var gameState = JSON.parse(input);
     // console.log(input);
@@ -133,45 +140,44 @@ function initializeMap(minePercent, rows, cols){
         }
     }
     gameState.remainingMines = gameState.totalMines;
-
     //counts the number of nearby mines
     for (var i = 0; i < gameState.cols; i++) {
         for (var j = 0; j < gameState.rows; j++) {
-            countNearby(i,j,gameState);
+            countNearby(i,j, gameState);
         }
     }
 
     return gameState;
 }
 
-function countNearby(i,j){
+function countNearby(i, j, gamestate){
     var counter = 0;
     if (i-1 >= 0 && j-1 >= 0 )
-        if (GS.board[i-1][j-1].mine) counter++;
+        if (gamestate.board[i-1][j-1].mine) counter++;
 
     if (i-1 >= 0)
-        if (GS.board[i-1][j].mine) counter++;
+        if (gamestate.board[i-1][j].mine) counter++;
 
-    if (i-1 >= 0 && j+1 < GS.rows )
-        if (GS.board[i-1][j+1].mine) counter++;
+    if (i-1 >= 0 && j+1 < gamestate.rows )
+        if (gamestate.board[i-1][j+1].mine) counter++;
 
     if (j-1 >= 0 )
-        if (GS.board[i][j-1].mine) counter++;
+        if (gamestate.board[i][j-1].mine) counter++;
 
-    if (j+1 < GS.rows )
-        if (GS.board[i][j+1].mine) counter++;
+    if (j+1 < gamestate.rows )
+        if (gamestate.board[i][j+1].mine) counter++;
 
-    if (i+1 < GS.cols && j-1 >= 0 )
-        if (GS.board[i+1][j-1].mine) counter++;
+    if (i+1 < gamestate.cols && j-1 >= 0 )
+        if (gamestate.board[i+1][j-1].mine) counter++;
 
-    if (i+1 < GS.cols)
-        if (GS.board[i+1][j].mine) counter++;
+    if (i+1 < gamestate.cols)
+        if (gamestate.board[i+1][j].mine) counter++;
 
-    if (i+1 < GS.cols && j+1 < GS.rows )
-        if (GS.board[i+1][j+1].mine) counter++;
+    if (i+1 < gamestate.cols && j+1 < gamestate.rows )
+        if (gamestate.board[i+1][j+1].mine) counter++;
 
 
-    GS.board[i][j].value = counter;
+    gamestate.board[i][j].value = counter;
 }
 
 function takeTurn(){
@@ -200,7 +206,7 @@ function checkWin(){
             }
         }
     }
-    console.log(minesCounter);
+    //console.log(minesCounter);
     if(minesCounter == 0){
         GS.win = true;
         console.log("set win to true");
@@ -209,22 +215,14 @@ function checkWin(){
 }
 
 function markMap(x,y,type){
-    console.log(typeof x,typeof y)
     if(type == 1 ){       //left click
+        console.log(GS.board[x][y].mine);
         if(GS.board[y][x].mine == true){
             GS.dead = true;
             displayLocation(x,y,1);
         }else{
             open_cell(x, y);
         }
-
-/*        else if(GS.board[y][x].value == 0){
-            displayLocation(x,y);
-            clearNearby(x,y);
-        } else{
-            displayLocation(x,y);
-        }
-        */
     } else if(type == 2){   //right click
         if(GS.board[y][x].flagged == false){
             GS.board[y][x].flagged = true;
@@ -233,14 +231,7 @@ function markMap(x,y,type){
             GS.board[y][x].flagged = false;
             displayLocation(x,y,3);
         }
-    } /*else if(type == 3){    //recursive clear nearby
-        if(GS.board[y][x].value == 0 && GS.board[y][x].cleared == false){
-            displayLocation(x,y);
-            clearNearby(x,y);
-        } else{
-            displayLocation(x,y);
-        }
-    }*/
+    } 
 }
 
 //displays the value of the current location, needed so we can actually
@@ -274,39 +265,10 @@ function open_cell(x,y){
     }
 }
 
-function clearNearby(i,j){
-
-    if (i-1 >= 0 && j-1 >= 0 )
-        markMap(i-1,j-1,3);
-
-    if (i-1 >= 0)
-        markMap(i-1,j,3);
-
-    if (i-1 >= 0 && j+1 < GS.cols )
-        markMap(i-1,j+1,3);
-
-    if (j-1 >= 0 )
-        markMap(i,j-1,3);
-
-    if (j+1 < GS.cols )
-        markMap(i,j+1,3);
-
-    if (i+1 < GS.rows && j-1 >= 0 )
-        markMap(i+1,j-1,3);
-
-    if (i+1 < GS.rows)
-        markMap(i+1,j,3);
-
-    if (i+1 < GS.rows && j+1 < GS.cols )
-        markMap(i+1,j+1,3);
-
-}
-
 function delegatedCellListener(event){
     var currElem = event.target;
     var temp;
     var coordinate;
-    console.log(event);
     while (currElem.getAttribute('id') !== 'board') {
         if (currElem.classList.contains('cell')) {
             temp = currElem.id;
@@ -341,35 +303,46 @@ function parseIdForCoordinate(str){
 
 }
 
-function playGame(fileKey, minePercent, newOrRead, rows, cols){
+function playGame(minePercent, newOrRead, rows, cols){
     console.log("starting playGame");
     var url = window.location.href;
-    fileKey = url.slice(url.indexOf("/play/"),url.length);
+    var fileKey = url.slice(url.indexOf("/play/"),url.length);
     fileKey = fileKey.slice(6,fileKey.length);
 
     if(newOrRead == 0){
         GS = initializeMap(minePercent,rows, cols);
+        //saveMap(fileKey);
     } else {
         GS = readMap(fileKey);
     }
     //printDebugMap(GS);
     //while(gameState.dead == false && gameState.win == false){
-        takeTurn();
+        //takeTurn();
     //}
-    saveMap(fileKey);
+    //saveMap(fileKey);
 
+}
+
+function newGame(){
+    var r = document.getElementById('row-text-input').value;
+    var c = document.getElementById('col-text-input').value;
+    GS = initializeMap(0.03, r, c);
+    saveMap('bob');
+    cellContainer.addEventListener('click', function(){delegateCellListener(event)});
+    window.location = '/play/'+'bob';
+    GS = readMap('bob');
+    console.log(GS);
+    closeCreateGameModal();
 }
 
 function closeCreateGameModal() {
  
-    console.log('here');
+    var modalBackdrop = document.getElementById('modal-backdrop');
+    modalBackdrop.classList.add('hidden');
 
-    var modalBackdrop = document.getElementById('modal-backdrop').classList.add('hidden');
-    var createTwitModal = document.getElementById('create-twit-modal').classList.add('hidden');
+    var createGameModal = document.getElementById('create-game-modal');//
+    createGameModal.classList.add('hidden');
 
-    // Hide the modal and its backdrop.
-    //modalBackdrop.classList.add('hidden');
-    //createTwitModal.classList.add('hidden');
 
     var inputElems = document.getElementsByClassName('game-input-element');
     for (var i = 0; i < inputElems.length; i++) {
