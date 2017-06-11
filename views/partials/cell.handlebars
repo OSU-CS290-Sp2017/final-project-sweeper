@@ -7,9 +7,11 @@
     <article class="cell" id="col_{{x}}_row_{{y}}">
 {{/unless}}
         {{#if this.value}}
+        {{#unless this.mine}}
             <p class="cell-text">
                     {{this.value}}
             </p>
+            {{/unless}}
         {{/if}}
         {{#if this.flagged}}
             <img src="/flag.png">

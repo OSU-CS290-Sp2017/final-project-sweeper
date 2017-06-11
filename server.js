@@ -40,9 +40,8 @@ app.get('/play/:filekey', function(req, res, next){
     }
 });
 
-app.get('/play/:filekey/map', function(req, res, next){
+app.get('/:filekey/map', function(req, res, next){
     res.status(200);
-
     var key = req.params.filekey;
     if(fs.existsSync('./public/savefiles/' + key + '.json')){
         boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
@@ -59,8 +58,6 @@ app.get('/play/:filekey/map', function(req, res, next){
 app.get('/generate/:filekey', function(req, res, next){
     res.status(200);
     var key = req.params.filekey;
-
-    res.status(200);
     res.end(mapGeneratorContent);
 });
 
