@@ -323,15 +323,24 @@ function playGame(minePercent, newOrRead, rows, cols){
 
 }
 
+function randString(){
+    var key = '';
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqurstuwxyz';
+    for(var i = 0; i < 10; i++){
+        key += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return key;
+}
+
 function newGame(){
     var r = document.getElementById('row-text-input').value;
     var c = document.getElementById('col-text-input').value;
     GS = initializeMap(0.03, r, c);
-    saveMap('bob');
+    var key = randString();
+    saveMap(key);
     cellContainer.addEventListener('click', function(){delegateCellListener(event)});
-    window.location = '/play/'+'bob';
-    GS = readMap('bob');
-    console.log(GS);
+    window.location = '/play/'+ key;
+    GS = readMap(key);
     closeCreateGameModal();
 }
 
