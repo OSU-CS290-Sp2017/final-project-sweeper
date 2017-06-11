@@ -98,10 +98,10 @@ app.get('*', function(req, res){
     res.render('404Page');
 });
 
-app.post('/play/:filekey/map',function(req, res){
+app.post('/:filekey',function(req, res){
+    res.status(200);
     var key = req.params.filekey;
     fs.writeFileSync('./public/savefiles/' + key + '.json', JSON.stringify(req.body,null,'\t'));
-    res.status(200);
     res.end();
 });
 
