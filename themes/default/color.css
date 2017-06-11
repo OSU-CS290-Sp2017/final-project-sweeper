@@ -8,7 +8,7 @@
 
 .cell{
     color: white;
-    background-color: yellow;
+    background-color: darkGrey;
 }
 
 .cell.cleared{
@@ -16,7 +16,17 @@
 }
 
 .cell.flagged{
+    background-color: blueViolet;
+}
+.cell.revealedMine{
     background-color: red;
+}
+
+.cell.revealedMine.cleared{
+    background-color: DarkRed;
+}
+.cell.revealedMine.flagged{
+    background-color: DarkMagenta;
 }
 a {
   color: #343434;

@@ -1,3 +1,16 @@
+//sweeper.js client side
+console.log("test");
+var searchb = document.getElementById("navbar-search-button");
+var searchtext = document.getElementById('navbar-search-input');
+searchb.addEventListener('click',twitsearch);
+
+function twitsearch(){
+  console.log("in twitsearch func");
+  var searchq = document.getElementById('navbar-search-input').value;
+  var twitcontainer = document.querySelector('.twit-container');
+  console.log("twit search value = ", searchq);
+}
+
 
 var gameState = {
     "theme": "default",
@@ -179,6 +192,18 @@ function countNearby(i, j, gamestate){
 
     gamestate.board[i][j].value = counter;
 }
+function revealMines(){
+    for (var i = 0; i < GS.cols; i++) {
+        for (var j = 0; j < GS.rows; j++) {
+            if(GS.board[i][j].mine){
+                console.log("found mine");
+                displayLocation(i,j,4);
+            }
+        }
+    }
+
+}
+
 
 function takeTurn(){
     //markMap(2,4,1);
@@ -209,27 +234,40 @@ function checkWin(){
     //console.log(minesCounter);
     if(minesCounter == 0){
         GS.win = true;
+        revealMines();
         console.log("set win to true");
     }
 
 }
 
 function markMap(x,y,type){
-    if(type == 1 ){       //left click
-        console.log(GS.board[x][y].mine);
-        if(GS.board[y][x].mine == true){
+    //console.log(GS.board[x][y].mine);
+    if(GS.dead || GS.win){
+        return;
+    }
+    if(type == 1 && GS.board[x][y].flagged == false){       //left click
+        if(GS.board[x][y].mine == true){
             GS.dead = true;
+            console.log("You clicked on a mine");
+            revealMines();
             displayLocation(x,y,1);
         }else{
             open_cell(x, y);
         }
-    } else if(type == 2){   //right click
-        if(GS.board[y][x].flagged == false){
-            GS.board[y][x].flagged = true;
+/*        else if(GS.board[y][x].value == 0){
+            displayLocation(x,y);
+            clearNearby(x,y);
+        } else{
+            displayLocation(x,y);
+        }
+        */
+    } else if(type == 2 && GS.board[x][y].cleared == false){   //right click
+        if(GS.board[x][y].flagged == false){
+            GS.board[x][y].flagged = true;
             displayLocation(x,y,2);
         } else{
-            GS.board[y][x].flagged = false;
-            displayLocation(x,y,3);
+            GS.board[x][y].flagged = false;
+            displayLocation(x,y,2);
         }
     } 
 }
@@ -237,15 +275,16 @@ function markMap(x,y,type){
 //displays the value of the current location, needed so we can actually
 //change the page in the future.
 function displayLocation(x,y,type){
-    GS.board[x][y].cleared = true;
+    //GS.board[x][y].cleared = true;
     var currCell = document.getElementById('col_' + x + '_row_' + y);
 
     if(type == 1){
         currCell.classList.add('cleared');
+        GS.board[x][y].cleared = true;
     } else if(type == 2){
-        currCell.classList.add('flagged');
-    } else if(type == 3){
-        currCell.classList.remove('flagged');
+        currCell.classList.toggle('flagged');
+    } else if(type == 4){
+        currCell.classList.add('revealedMine');
     }
 }
 
@@ -293,8 +332,8 @@ function parseIdForCoordinate(str){
     var row = str.slice(0,str.indexOf("_row"));
     col = col.slice(5, col.length);
     row = row.slice(4, row.length);
-     console.log(col,parseInt(col));
-     console.log(row,parseInt(row));
+    //   console.log(col,parseInt(col));
+    //   console.log(row,parseInt(row));
 
     return {
         "col":parseInt(col),
@@ -305,6 +344,7 @@ function parseIdForCoordinate(str){
 
 function playGame(minePercent, newOrRead, rows, cols){
     console.log("starting playGame");
+
     var url = window.location.href;
     var fileKey = url.slice(url.indexOf("/play/"),url.length);
     fileKey = fileKey.slice(6,fileKey.length);
