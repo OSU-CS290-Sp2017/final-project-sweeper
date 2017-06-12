@@ -130,6 +130,11 @@ function updateMap(){
             if(GS.board[j][i].flagged){
                 currCell.classList.add('flagged');
             }
+            if(GS.board[j][i].cleared == true){
+                var text = currCell.querySelector('.cell-text');
+                if(text)
+                    text.classList.remove('hidden');
+            }
         }
     }
 }
