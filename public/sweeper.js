@@ -1,14 +1,12 @@
 //sweeper.js client side
-console.log("test");
 var searchb = document.getElementById("navbar-search-button");
 var searchtext = document.getElementById('navbar-search-input');
-searchb.addEventListener('click',twitsearch);
+searchb.addEventListener('click',search);
 
-function twitsearch(){
-  console.log("in twitsearch func");
+function search(){
+  console.log("in search func");
   var searchq = document.getElementById('navbar-search-input').value;
-  var twitcontainer = document.querySelector('.twit-container');
-  console.log("twit search value = ", searchq);
+  console.log("search value = ", searchq);
 }
 
 
@@ -27,7 +25,7 @@ var GS;
 var cellContainer = document.getElementById('board');
 cellContainer.addEventListener('click', function(){delegatedCellListener(event)});
 
-var fileKey;       //automatically adds .json at end of file
+//var fileKey;       //automatically adds .json at end of file
 var minePercent = 0.03;         //chance that each spot is a mine, out of 1
 var newOrRead = 1;              //0 for new, 1 for read
 var rows = 5;                   //obvious
@@ -35,24 +33,45 @@ var cols = 5;
 
 window.addEventListener('load', function(){
     //playGame(fileKey, minePercent, newOrRead, rows, cols);
+    GS = readMap(getFileKey());
+    updateMap();
+});
+
+window.addEventListener('unload', function(){
+    alert("TEST");
+});
+
+function getFileKey(){
     var url = window.location.href;
     var fileKey = url.slice(url.indexOf("/play/"),url.length);
     fileKey = fileKey.slice(6,fileKey.length);
-    GS = readMap(fileKey);
-});
+    return fileKey;
+}
 
 var modalCloseButton = document.querySelector('#create-game-modal .modal-close-button');
-if(modalCloseButton)
-modalCloseButton.addEventListener('click', closeCreateGameModal);
+if(modalCloseButton){
+    modalCloseButton.addEventListener('click', closeCreateGameModal);
+}
 
 var modalCancelButton = document.querySelector('#create-game-modal .modal-cancel-button');
-if(modalCloseButton)
-modalCancelButton.addEventListener('click', closeCreateGameModal);
-
+if(modalCloseButton){
+    modalCancelButton.addEventListener('click', closeCreateGameModal);
+}
 
 var modalAcceptButton = document.querySelector('#create-game-modal .modal-accept-button');
-if(modalAcceptButton)
-modalAcceptButton.addEventListener('click', newGame);
+if(modalAcceptButton){
+    modalAcceptButton.addEventListener('click', newGame);
+}
+
+var modalAcceptButton = document.querySelector('.modal-accept-button');
+if(modalAcceptButton){
+    modalAcceptButton.addEventListener('click', newGame);
+}
+
+var saveButton = document.getElementById('save');
+if(saveButton){
+    saveButton.addEventListener('click', function(){saveMap(getFileKey());});
+}
 
 //creates each cell, requires an x coordinate, y coordinate, and whether or not
 //the space is a mine
@@ -66,7 +85,7 @@ function Cell(x, y, isMine) {
         "value": 0
     };
 }
-
+/*
 function makeListeners(){
     cellContainer = document.getElementById('board');
     if(cellContainer){
@@ -75,12 +94,13 @@ function makeListeners(){
         });
     }
 }
-
+*/
 function getRandomBetween(min,max){
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+/*
 //prints out the map
 function printDebugMap(){
 
@@ -113,25 +133,42 @@ function printMap(){
         console.log(currRow);
     }
 }
-
+*/
 function saveMap(fileKey){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "./" + fileKey, false ); // false for synchronous request
+    xmlHttp.open( "POST", "/" + fileKey, false ); // false for synchronous request
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send( JSON.stringify(GS) );
 }
 
-function readMap(fileName){
-
+function readMap(fileKey){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "./" + fileName + "/map", false ); // false for synchronous request
-    xmlHttp.send( fileName );
+    xmlHttp.open( "GET", "/" + fileKey + "/map", false ); // false for synchronous request
+    xmlHttp.send( fileKey );
+    
     return JSON.parse(xmlHttp.responseText);
-    // var input = fs.readFileSync("./public/" + fileName + ".json","utf-8");
-    // var gameState = JSON.parse(input);
-    // console.log(input);
-    // return gameState;
 }
+
+function showMap(fileKey){
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "/play/" + fileKey, false ); // false for synchronous request
+    xmlHttp.send( fileKey );
+}
+
+function updateMap(){
+    console.log("UPDATE");
+    var currentCell;
+    for(var i = 0; i < GS.rows; i++){
+        for(var j = 0; j < GS.cols; j++){
+            currCell = document.getElementById('col_' + j + '_row_' + i);
+            console.log(i, ',', j);
+            if(GS.board[j][i].flagged){
+                currCell.classList.add('flagged');
+            }
+        }
+    }
+}
+
 //initializes the map with rows, cols, and sets each space to its correct value
 function initializeMap(minePercent, rows, cols){
 
@@ -204,7 +241,7 @@ function revealMines(){
 
 }
 
-
+/*
 function takeTurn(){
     //markMap(2,4,1);
     //printMap();
@@ -218,7 +255,7 @@ function takeTurn(){
 
     checkWin();
 }
-
+*/
 function checkWin(){
 
     var minesCounter = GS.totalMines;
@@ -254,13 +291,6 @@ function markMap(x,y,type){
         }else{
             open_cell(x, y);
         }
-/*        else if(GS.board[y][x].value == 0){
-            displayLocation(x,y);
-            clearNearby(x,y);
-        } else{
-            displayLocation(x,y);
-        }
-        */
     } else if(type == 2 && GS.board[x][y].cleared == false){   //right click
         if(GS.board[x][y].flagged == false){
             GS.board[x][y].flagged = true;
@@ -275,7 +305,6 @@ function markMap(x,y,type){
 //displays the value of the current location, needed so we can actually
 //change the page in the future.
 function displayLocation(x,y,type){
-    //GS.board[x][y].cleared = true;
     var currCell = document.getElementById('col_' + x + '_row_' + y);
 
     if(type == 1){
@@ -296,7 +325,6 @@ function open_cell(x,y){
         for(var i = -1; i < 2; i++){
             for(var j = -1; j < 2; j++){
                 if(!((y + j < 0) || (y + j >= GS.rows) || (x + i < 0) || (x + i >= GS.cols)) && GS.board[x + i][y + j].cleared == false){
-                    //console.log('(' + (y+j) + ', ' + (x + i) + ')' + ', ' + GS.board[x+i][y+j].cleared + ', '+ GS.board[x+i][y+j].value);
                     open_cell(x + i, y + j);
                 }
             }
@@ -332,16 +360,13 @@ function parseIdForCoordinate(str){
     var row = str.slice(0,str.indexOf("_row"));
     col = col.slice(5, col.length);
     row = row.slice(4, row.length);
-    //   console.log(col,parseInt(col));
-    //   console.log(row,parseInt(row));
-
     return {
         "col":parseInt(col),
         "row":parseInt(row)
     }
 
 }
-
+/*
 function playGame(minePercent, newOrRead, rows, cols){
     console.log("starting playGame");
 
@@ -362,7 +387,7 @@ function playGame(minePercent, newOrRead, rows, cols){
     //saveMap(fileKey);
 
 }
-
+*/
 function randString(){
     var key = '';
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqurstuwxyz';
@@ -375,13 +400,23 @@ function randString(){
 function newGame(){
     var r = document.getElementById('row-text-input').value;
     var c = document.getElementById('col-text-input').value;
-    GS = initializeMap(0.03, r, c);
-    var key = randString();
-    saveMap(key);
-    cellContainer.addEventListener('click', function(){delegateCellListener(event)});
-    window.location = '/play/'+ key;
-    GS = readMap(key);
-    closeCreateGameModal();
+    var m = document.getElementById('mine-text-input').value;
+    var k = document.getElementById('key-text-input').value;
+    if(!( r && c && m ) && !k){
+        alert("Set values for a new map, or provide a key for a saved game");
+    }else {
+        if(!k){
+            GS = initializeMap(m, r, c);
+            k = randString();
+            saveMap(k);
+        }
+        //cellContainer.addEventListener('click', function(){delegateCellListener(event)});
+        GS = readMap(k);
+        window.location = '/play/' + k;
+        showMap(k);
+        updateMap();
+        closeCreateGameModal();
+    }
 }
 
 function closeCreateGameModal() {
