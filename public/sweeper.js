@@ -276,6 +276,7 @@ function displayLocation(x,y,type){
 
     if(type == 1){
         currCell.classList.add('cleared');
+        if(text)
         text.classList.remove('hidden');
         GS.board[x][y].cleared = true;
     } else if(type == 2){
