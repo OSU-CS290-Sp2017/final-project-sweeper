@@ -102,4 +102,11 @@ app.post('/:filekey',function(req, res){
     res.end();
 });
 
+app.post('/delete/:filekey',function(req, res){
+    res.status(200);
+    var key = req.params.filekey;
+    fs.unlink('./public/savefiles/' + key + '.json');
+    res.end();
+});
+
 app.listen(port);

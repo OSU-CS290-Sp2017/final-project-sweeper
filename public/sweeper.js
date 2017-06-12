@@ -33,12 +33,10 @@ var cols = 5;
 
 window.addEventListener('load', function(){
     //playGame(fileKey, minePercent, newOrRead, rows, cols);
-    GS = readMap(getFileKey());
-    updateMap();
-});
-
-window.addEventListener('unload', function(){
-    alert("TEST");
+    if(getFileKey()){
+        GS = readMap(getFileKey());
+        updateMap();
+    }
 });
 
 function getFileKey(){
@@ -100,40 +98,7 @@ function getRandomBetween(min,max){
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-/*
-//prints out the map
-function printDebugMap(){
 
-    for (var i = 0; i < GS.cols; i++) {
-        var currRow = [];
-        for (var j = 0; j < GS.rows; j++) {
-            if(GS.board[i][j].mine == false){
-                currRow[j] = GS.board[i][j].value;
-            }else{
-                currRow[j] = 9;
-            }
-        }
-        console.log(currRow);
-    }
-}
-
-function printMap(){
-
-    for (var i = 0; i < GS.cols; i++) {
-        var currRow = [];
-        for (var j = 0; j < GS.rows; j++) {
-            if(GS.board[i][j].flagged){
-                currRow[j] = 'F';
-            } else if(GS.board[i][j].cleared){
-                currRow[j] = GS.board[i][j].value;
-            } else {
-                currRow[j] = '*';
-            }
-        }
-        console.log(currRow);
-    }
-}
-*/
 function saveMap(fileKey){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "POST", "/" + fileKey, false ); // false for synchronous request
@@ -142,11 +107,13 @@ function saveMap(fileKey){
 }
 
 function readMap(fileKey){
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "/" + fileKey + "/map", false ); // false for synchronous request
-    xmlHttp.send( fileKey );
-    
-    return JSON.parse(xmlHttp.responseText);
+    if(fileKey){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", "/" + fileKey + "/map", false ); // false for synchronous request
+        xmlHttp.send( fileKey );
+        
+        return JSON.parse(xmlHttp.responseText);
+    }
 }
 
 function showMap(fileKey){
@@ -156,12 +123,10 @@ function showMap(fileKey){
 }
 
 function updateMap(){
-    console.log("UPDATE");
     var currentCell;
     for(var i = 0; i < GS.rows; i++){
         for(var j = 0; j < GS.cols; j++){
             currCell = document.getElementById('col_' + j + '_row_' + i);
-            console.log(i, ',', j);
             if(GS.board[j][i].flagged){
                 currCell.classList.add('flagged');
             }
@@ -241,21 +206,21 @@ function revealMines(){
 
 }
 
-/*
-function takeTurn(){
-    //markMap(2,4,1);
-    //printMap();
-    //console.log("marked 1");
-    // markMap(7,8,1,GS);
-    // printMap(GS);
-    // console.log("marked 2");
-    // markMap(9,9,1,GS);
-    // printMap(GS);
-    // console.log("marked 3");
-
-    checkWin();
+function deleteFile(fileKey){
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "POST", "/delete/" + fileKey, false ); // false for synchronous request
+    xmlHttp.send();
 }
-*/
+
+function openGameOverBox(win){
+    if(win)
+        alert("Contragulations, You have won!");
+    else
+        alert("Oh jeez, looks like that's a mine, oh no");
+    window.location = '/';
+    deleteFile(getFileKey());
+}
+
 function checkWin(){
 
     var minesCounter = GS.totalMines;
@@ -268,11 +233,11 @@ function checkWin(){
             }
         }
     }
-    //console.log(minesCounter);
     if(minesCounter == 0){
         GS.win = true;
         revealMines();
         console.log("set win to true");
+        openGameOverBox(true);
     }
 
 }
@@ -288,6 +253,7 @@ function markMap(x,y,type){
             console.log("You clicked on a mine");
             revealMines();
             displayLocation(x,y,1);
+            openGameOverBox(false);
         }else{
             open_cell(x, y);
         }
@@ -306,9 +272,11 @@ function markMap(x,y,type){
 //change the page in the future.
 function displayLocation(x,y,type){
     var currCell = document.getElementById('col_' + x + '_row_' + y);
+    var text = currCell.querySelector('.cell-text');
 
     if(type == 1){
         currCell.classList.add('cleared');
+        text.classList.remove('hidden');
         GS.board[x][y].cleared = true;
     } else if(type == 2){
         currCell.classList.toggle('flagged');
@@ -366,28 +334,7 @@ function parseIdForCoordinate(str){
     }
 
 }
-/*
-function playGame(minePercent, newOrRead, rows, cols){
-    console.log("starting playGame");
 
-    var url = window.location.href;
-    var fileKey = url.slice(url.indexOf("/play/"),url.length);
-    fileKey = fileKey.slice(6,fileKey.length);
-
-    if(newOrRead == 0){
-        GS = initializeMap(minePercent,rows, cols);
-        //saveMap(fileKey);
-    } else {
-        GS = readMap(fileKey);
-    }
-    //printDebugMap(GS);
-    //while(gameState.dead == false && gameState.win == false){
-        //takeTurn();
-    //}
-    //saveMap(fileKey);
-
-}
-*/
 function randString(){
     var key = '';
     var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqurstuwxyz';
@@ -417,6 +364,26 @@ function newGame(){
         updateMap();
         closeCreateGameModal();
     }
+}
+
+function closeOverModal() {
+ 
+    var modalBackdrop = document.getElementById('modal-backdrop');
+    modalBackdrop.classList.add('hidden');
+
+    var overModal = document.getElementById('over-modal');//
+    overModal.classList.add('hidden');
+
+}
+
+function openOverModal() {
+ 
+    var modalBackdrop = document.getElementById('modal-backdrop');
+    modalBackdrop.classList.remove('hidden');
+
+    var overModal = document.getElementById('over-modal');//
+    overModal.classList.remove('hidden');
+
 }
 
 function closeCreateGameModal() {
