@@ -2,9 +2,8 @@
 
 # sends http request to get images from flickr using argument 
 
-wget -O parseThis https://www.flickr.com/search/?text=$1
+wget -O parseThis https://www.flickr.com/search/?text=$1 -q
 
-#touch imgSrc
 
 # parses information put into specified file to only include URLs
 input="./parseThis"
@@ -23,10 +22,7 @@ sed 's/..$//' tmp > imageURL
 # takes random image from flickr returned results, downloads
 #rand=$((($RANDOM % 10) + 1))
 line=$(head -n 1 imageURL)
-wget -O flag.png $line
-
-# generates colorscheme
-#wal -i './flag.png'
+wget -O flag.png $line -q
 
 # cleans up temp files
 rm imgSrc
