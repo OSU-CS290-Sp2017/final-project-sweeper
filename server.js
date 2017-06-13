@@ -40,9 +40,8 @@ app.get('/play/:filekey', function(req, res, next){
     }
 });
 
-app.get('/play/:filekey/map', function(req, res, next){
+app.get('/:filekey/map', function(req, res, next){
     res.status(200);
-
     var key = req.params.filekey;
     if(fs.existsSync('./public/savefiles/' + key + '.json')){
         boardData = JSON.parse(fs.readFileSync('./public/savefiles/' + key + '.json', 'utf-8'));
@@ -59,8 +58,6 @@ app.get('/play/:filekey/map', function(req, res, next){
 app.get('/generate/:filekey', function(req, res, next){
     res.status(200);
     var key = req.params.filekey;
-
-    res.status(200);
     res.end(mapGeneratorContent);
 });
 
@@ -98,10 +95,17 @@ app.get('*', function(req, res){
     res.render('404Page');
 });
 
-app.post('/play/:filekey/map',function(req, res){
+app.post('/:filekey',function(req, res){
+    res.status(200);
     var key = req.params.filekey;
     fs.writeFileSync('./public/savefiles/' + key + '.json', JSON.stringify(req.body,null,'\t'));
+    res.end();
+});
+
+app.post('/delete/:filekey',function(req, res){
     res.status(200);
+    var key = req.params.filekey;
+    fs.unlink('./public/savefiles/' + key + '.json');
     res.end();
 });
 

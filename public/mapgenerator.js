@@ -1,4 +1,4 @@
-// var fs = require('fs');
+var fs = require('fs');
 
 var gameState = {
     "theme": "default",
@@ -12,14 +12,14 @@ var gameState = {
 }
 
 
-var fileKey = "gen1";       //automatically adds .json at end of file
-var minePercent = 0.03;         //chance that each spot is a mine, out of 1
-var rows = 13;                   //obvious
-var cols = 13;
+var fileKey = process.env.NAME || "newMap";       //automatically adds .json at end of file
+var minePercent = process.env.MINEPERCENT || 0.1;         //chance that each spot is a mine, out of 1
+var rows = process.env.ROWS || 10;                   //obvious
+var cols = process.env.COLS || 10;
 
-window.addEventListener('load', function(){
+//window.addEventListener('load', function(){
     playGame(fileKey, minePercent, rows, cols);
-});
+// });
 //creates each cell, requires an x coordinate, y coordinate, and whether or not
 //the space is a mine
 function Cell(x, y, isMine) {
@@ -41,14 +41,14 @@ function getRandomBetween(min,max){
 
 
 function saveMap(fileName){
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send( JSON.stringify(gameState) );
+    // var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.open( "POST", "./" + fileKey + "/map", false ); // false for synchronous request
+    // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    // xmlHttp.send( JSON.stringify(gameState) );
     //xmlHttp.send( GS );
 
-    // var out = JSON.stringify(GS,null,'\t');
-    // fs.writeFileSync("./public/" + fileName + ".json", out);
+    var out = JSON.stringify(gameState,null,'\t');
+    fs.writeFileSync("./public/savefiles/" + fileName + ".json", out);
 
 }
 
@@ -56,8 +56,8 @@ function saveMap(fileName){
 //initializes the map with rows, cols, and sets each space to its correct value
 function initializeMap(minePercent, rows, cols){
 
-    gameState.cols = cols;
-    gameState.rows = rows;
+    gameState.cols = rows;
+    gameState.rows = cols;
 
     //sets whether or not each cell has a mine
     for (var i = 0; i < gameState.cols; i++) {
@@ -110,8 +110,11 @@ function countNearby(i,j){
     if (i+1 < gameState.cols && j+1 < gameState.rows )
         if (gameState.board[i+1][j+1].mine) counter++;
 
-
-    gameState.board[i][j].value = counter;
+    if(gameState.board[i][j].mine){
+        gameState.board[i][j].value = 0;
+    } else{
+        gameState.board[i][j].value = counter;
+    }
 }
 
 

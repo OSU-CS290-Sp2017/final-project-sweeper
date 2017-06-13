@@ -6,12 +6,14 @@
 {{#unless this.cleared}}
     <article class="cell" id="col_{{x}}_row_{{y}}">
 {{/unless}}
-        {{#if this.value}}
-            <p class="cell-text">
+        {{#unless this.mine}}
+            <p class="cell-text hidden">
+                    {{#if this.value}}
                     {{this.value}}
+                    {{/if}}
             </p>
-        {{/if}}
-        {{#if this.flagged}}
-            <img src="/flag.png">
-        {{/if}}
+        {{/unless}}
+        {{!#if this.flagged}}
+            <img src="/flag.png" class="hidden">
+        {{!/if}}
     </article>
