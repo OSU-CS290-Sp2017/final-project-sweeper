@@ -111,7 +111,7 @@ function readMap(fileKey){
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", "/" + fileKey + "/map", false ); // false for synchronous request
         xmlHttp.send( fileKey );
-        
+
         return JSON.parse(xmlHttp.responseText);
     }
 }
@@ -265,12 +265,15 @@ function markMap(x,y,type){
     } else if(type == 2 && GS.board[x][y].cleared == false){   //right click
         if(GS.board[x][y].flagged == false){
             GS.board[x][y].flagged = true;
+            GS.remainingMines = GS.remainingMines-1;
             displayLocation(x,y,2);
         } else{
             GS.board[x][y].flagged = false;
+            GS.remainingMines = GS.remainingMines+1;
+
             displayLocation(x,y,2);
         }
-    } 
+    }
 }
 
 //displays the value of the current location, needed so we can actually
@@ -373,7 +376,7 @@ function newGame(){
 }
 
 function closeOverModal() {
- 
+
     var modalBackdrop = document.getElementById('modal-backdrop');
     modalBackdrop.classList.add('hidden');
 
@@ -383,7 +386,7 @@ function closeOverModal() {
 }
 
 function openOverModal() {
- 
+
     var modalBackdrop = document.getElementById('modal-backdrop');
     modalBackdrop.classList.remove('hidden');
 
@@ -393,7 +396,7 @@ function openOverModal() {
 }
 
 function closeCreateGameModal() {
- 
+
     var modalBackdrop = document.getElementById('modal-backdrop');
     modalBackdrop.classList.add('hidden');
 
