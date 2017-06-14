@@ -3,6 +3,7 @@ var searchb = document.getElementById("navbar-search-button");
 var searchtext = document.getElementById('navbar-search-input');
 searchb.addEventListener('click',search);
 
+
 function search(){
   console.log("in search func");
   var searchq = document.getElementById('navbar-search-input').value;
@@ -104,6 +105,7 @@ function saveMap(fileKey){
     xmlHttp.open( "POST", "/" + fileKey, false ); // false for synchronous request
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send( JSON.stringify(GS) );
+	alert('Your saved map key is:' + fileKey);
 }
 
 function readMap(fileKey){
@@ -219,7 +221,7 @@ function deleteFile(fileKey){
 
 function openGameOverBox(win){
     if(win)
-        alert("Contragulations, You have won!");
+        alert("Congratulations, You have won!");
     else
         alert("Oh jeez, looks like that's a mine, oh no");
     window.location = '/';
