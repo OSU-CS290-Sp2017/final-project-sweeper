@@ -243,11 +243,12 @@ img .flagged{
   cursor: pointer;
 }
 
-.modal-footer .modal-cancel-button:hover {
-  background-color: #ff00f6;
+.modal-footer .modal-accept-button:hover {
+  background-color: #fff
+  color: #383333;
 }
 
 .modal-footer .modal-accept-button {
-  background-color: #319df6;
+  background-color: #383333;
   color: #fff;
 }
