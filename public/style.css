@@ -234,7 +234,7 @@ img .flagged{
 
 .modal-footer button {
   font-size: 20px;
-  background-color: #fff;
+  background-color: #FF303F;
   color: #333;
   border: 1px solid #333;
   border-radius: 5px;
@@ -244,11 +244,6 @@ img .flagged{
 }
 
 .modal-footer .modal-accept-button:hover {
-  background-color: #fff
-  color: #383333;
-}
-
-.modal-footer .modal-accept-button {
   background-color: #383333;
   color: #fff;
 }

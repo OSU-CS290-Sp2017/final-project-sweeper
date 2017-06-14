@@ -2,14 +2,13 @@
 
 {{> header}}
 
-<<<<<<< HEAD
-{{#unless modal}}
+{{!#unless modal}}
     <main id="board">
         {{#each row}}
             {{> row}}
         {{/each}}
     </main>
-{{/unless}}
+{{!/unless}}
 
 {{#if modal}}
     {{> createSweeperModal}}

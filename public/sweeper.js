@@ -46,17 +46,6 @@ function getFileKey(){
     fileKey = fileKey.slice(6,fileKey.length);
     return fileKey;
 }
-
-var modalCloseButton = document.querySelector('#create-game-modal .modal-close-button');
-if(modalCloseButton){
-    modalCloseButton.addEventListener('click', closeCreateGameModal);
-}
-
-var modalCancelButton = document.querySelector('#create-game-modal .modal-cancel-button');
-if(modalCloseButton){
-    modalCancelButton.addEventListener('click', closeCreateGameModal);
-}
-
 var modalAcceptButton = document.querySelector('#create-game-modal .modal-accept-button');
 if(modalAcceptButton){
     modalAcceptButton.addEventListener('click', newGame);
